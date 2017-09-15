@@ -1,0 +1,35 @@
+body {
+  font-family: sans-serif;
+}
+
+h4 {
+  margin-bottom: 5px;
+}
+
+span.token {
+  border: 2px darkred solid;
+  background-color: salmon;
+  padding: 2px 5px;
+  margin: 0 5px;
+  border-radius: 4px;
+  line-height: 2;
+}
+
+ul {
+  display: inline-block;
+  list-style: disclosure-closed inside;
+  vertical-align: middle;
+  margin: 3px 0;
+  padding: 1px 5px;
+  border: 3px solid green;
+  border-radius: 9px;
+}
+
+li {
+  padding: 0;
+}
+
+li, span.token, textarea, code {
+  font-family: monospace;
+  font-size: 16px;
+}

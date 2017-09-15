@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mini-scheme.js</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1>mini-scheme.js</h1>
+    <div id="app">
+      <h4>Source</h4>
+      <textarea v-model="input" rows="5" cols="80"></textarea>
+      <h4>Tokens</h4>
+      <span class="token" v-for="token in tokens">{{token}}</span>
+      <h4>AST</h4>
+      <item :model="ast"></item>
+      <h4>Result</h4>
+      <code>{{result}}</code>
+      <h4>Links</h4>
+      <a href="http://norvig.com/lispy.html">Peter Norvig's lis.py</a>
+    </div>
+
+    <!-- item template -->
+    <script type="text/x-template" id="item-template">
+      <li v-if="isList"><ul>
+        <item v-for="item in model" :key="item.toString()" :model="item"></item>
+      </ul></li>
+      <li v-else>{{model}}</li>
+    </script>
+    <script src="vue.js" charset="utf-8"></script>
+    <script src="app.js" charset="utf-8"></script>
+  </body>
+</html>
