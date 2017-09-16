@@ -53,7 +53,7 @@
         ">=": (a, b) => a >= b,
         "<": (a, b) => a < b,
         "<=": (a, b) => a <= b,
-        "do": (...args) => args[args.length - 1]
+        "begin": (...args) => args[args.length - 1]
     };
 
     function evaluate(x, env) {
@@ -68,11 +68,11 @@
         } else if (x[0] === "define") {
             const [_, name, exp] = x;
             env[name] = evaluate(exp, env);
-        } else if (x[0] === "func") {
+        } else if (x[0] === "lambda") {
             const [_, arg_names, body] = x;
             // Do nothing for now, except store the current environment
             // together with the function definition.
-            return ["func", arg_names, body, env];
+            return ["lambda", arg_names, body, env];
         } else {
             // Function call (no special form)
             const [func, ...args] = x.map(exp => evaluate(exp, env));
@@ -110,7 +110,10 @@
     new Vue({
         el: "#app",
         data: {
-            input: "(do\n  (define make_adder (func (x) (func (y) (+ x y))))\n  ((make_adder 4) 3)\n)"
+            input: "(begin\n" +
+                   "  (define make_adder (lambda (x) (lambda (y) (+ x y))))\n" +
+                   "  ((make_adder 4) 3)\n" +
+                   ")"
         },
         computed: {
             tokens: function() {
