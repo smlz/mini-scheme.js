@@ -75,8 +75,11 @@
             return ["lambda", arg_names, body, env];
         } else {
             // Function call (no special form)
+            const func_name = x[0];
             const [func, ...args] = x.map(exp => evaluate(exp, env));
-            if (typeof func === "function") {
+            if (typeof func === "undefined") {
+                throw Error("Unknown function name: " + func_name);
+            } else if (typeof func === "function") {
                 // Native JavaScript function call
                 return func(...args);
             } else {
