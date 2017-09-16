@@ -107,13 +107,10 @@
         },
     });
 
-    new Vue({
+    const vm = new Vue({
         el: "#app",
         data: {
-            input: "(begin\n" +
-                   "  (define make_adder (lambda (x) (lambda (y) (+ x y))))\n" +
-                   "  ((make_adder 4) 3)\n" +
-                   ")"
+            input: "",
             tokens: [],
             ast: [],
             result: undefined,
@@ -138,4 +135,10 @@
         },
     });
 
+    // Example input:
+    vm.input =
+        "(begin\n" +
+        "  (define make_adder (lambda (x) (lambda (y) (+ x y))))\n" +
+        "  ((make_adder 4) 3)\n" +
+        ")";
 }());
