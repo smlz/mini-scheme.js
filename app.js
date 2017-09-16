@@ -1,4 +1,5 @@
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "_" }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global Vue */
 
 (function() {
