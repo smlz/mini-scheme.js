@@ -114,16 +114,26 @@
                    "  (define make_adder (lambda (x) (lambda (y) (+ x y))))\n" +
                    "  ((make_adder 4) 3)\n" +
                    ")"
+            tokens: [],
+            ast: [],
+            result: undefined,
+            error: false,
+            debug: true
         },
         computed: {
-            tokens: function() {
-                return tokenize(this.input);
-            },
-            ast: function() {
-                return parse(this.tokens);
-            },
-            result: function() {
-                return evaluate(this.ast, Object.create(global_env));
+        },
+        watch: {
+            input: function(val) {
+                this.ast = [];
+                this.result = undefined;
+                this.error = false;
+                try {
+                    this.tokens = tokenize(val);
+                    this.ast = parse(this.tokens.slice());
+                    this.result = evaluate(this.ast, Object.create(global_env));
+                } catch (error) {
+                    this.error = error.message;
+                }
             }
         },
     });

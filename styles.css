@@ -1,18 +1,52 @@
 body {
   font-family: sans-serif;
+  padding: 10px 2.5%;
+  max-width: 1200px;
 }
 
 h4 {
   margin-bottom: 5px;
 }
 
-span.token {
-  border: 2px darkred solid;
+textarea {
+  width: 100%;
+  padding: 5px;
+}
+
+p.error {
+  border: 5px solid red;
   background-color: salmon;
+  padding: 15px;
+}
+
+div.ast h4, div.tokens h4 {
+  margin-top: 0;
+}
+
+div.ast {
+  float: left;
+  width: 60%;
+}
+
+div.tokens {
+  float: left;
+  width: 40%;
+}
+
+hr {
+  clear: both;
+  border: none;
+}
+span.token {
+  border: 2px darkblue solid;
+  background-color: lightblue;
   padding: 2px 5px;
-  margin: 0 5px;
   border-radius: 4px;
-  line-height: 2;
+  line-height: 2.2;
+}
+
+div.ast > li {
+  list-style: none;
 }
 
 ul {
@@ -29,7 +63,7 @@ li {
   padding: 0;
 }
 
-li, span.token, textarea, code {
+li, span.token, textarea, p.code {
   font-family: monospace;
   font-size: 16px;
 }

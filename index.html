@@ -9,13 +9,25 @@
     <h1>mini-scheme.js</h1>
     <div id="app">
       <h4>Source</h4>
-      <textarea v-model="input" rows="5" cols="80"></textarea>
-      <h4>Tokens</h4>
-      <span class="token" v-for="token in tokens">{{token}}</span>
-      <h4>AST</h4>
-      <item :model="ast"></item>
-      <h4>Result</h4>
-      <code>{{result}}</code>
+      <textarea v-model="input" rows="10"></textarea><br>
+      <p v-if="error" class="error"><strong>Error: </strong>{{error}}</p>
+      <template v-else>
+        <h4>Result</h4>
+        <p class="code">{{result}}</p>
+      </template>
+      <div class="ast">
+        <h4>AST</h4>
+        <item :model="ast"></item>
+      </div>
+      <div class="tokens">
+        <h4>Tokens</h4>
+        <p>
+          <template v-for="token in tokens">
+            <span class="token">{{token}}</span>&nbsp;
+          </template>
+        </p>
+      </div>
+      <hr>
       <h4>Links</h4>
       <a href="http://norvig.com/lispy.html">Peter Norvig's lis.py</a>
     </div>
