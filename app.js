@@ -121,6 +121,10 @@
             debug: true
         },
         computed: {
+            parenBalance: function() {
+                return this.input.split("(").length -
+                       this.input.split(")").length;
+            }
         },
         watch: {
             input: function(val) {

@@ -9,6 +9,9 @@
     <h1>mini-scheme.js</h1>
     <div id="app">
       <h4>Source</h4>
+      <small v-if="parenBalance > 0">{{parenBalance}} open paren</small>
+      <small v-else-if="parenBalance < 0" class="error">{{-parenBalance}} extra closed paren</small>
+      <small v-else>&nbsp;</small>
       <textarea v-model="input" rows="10"></textarea><br>
       <p v-if="error" class="error"><strong>Error: </strong>{{error}}</p>
       <template v-else>

@@ -9,7 +9,7 @@ h4 {
 }
 
 textarea {
-  width: 100%;
+  width: calc(100% - 12px);
   padding: 5px;
 }
 
@@ -17,6 +17,16 @@ p.error {
   border: 5px solid red;
   background-color: salmon;
   padding: 15px;
+}
+
+small {
+  float: right;
+  height: 0;
+  margin-top: -15px;
+}
+
+small.error {
+  color: red;
 }
 
 div.ast h4, div.tokens h4 {
