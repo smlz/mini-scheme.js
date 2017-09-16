@@ -40,7 +40,7 @@
         "-": (a, b) => a - b,
         "*": (a, b) => a * b,
         "/": (a, b) => a / b,
-        "begin": (...args) => args[args.length - 1]
+        "do": (...args) => args[args.length - 1]
     };
 
     function evaluate(x, env=global_env) {
@@ -88,7 +88,7 @@
     new Vue({
         el: "#app",
         data: {
-            input: "(begin\n  (define make_adder (func (x) (func (y) (+ x y))))\n  ((make_adder 4) 3)\n)"
+            input: "(do\n  (define make_adder (func (x) (func (y) (+ x y))))\n  ((make_adder 4) 3)\n)"
         },
         computed: {
             tokens: function() {
