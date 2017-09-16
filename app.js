@@ -63,17 +63,15 @@
             const [_, name, exp] = x;
             env[name] = evaluate(exp, env);
         } else if (x[0] === "func") {
-            let [_, params, body] = x;
+            const [_, params, body] = x;
             return ["func", params, body, env];  // Nothing to do for now
         } else {
-            let [func, ...args] = x;
-            func = evaluate(func, env);
-            args = args.map(arg => evaluate(arg, env));
+            const [func, ...args] = x.map(exp => evaluate(exp, env));
             if (typeof func === "function") {
                 return func(...args);
             } else {
-                let [_, params, body, env] = func;
-                let new_env = params.reduce(function(env, name, i) {
+                const [_, params, body, env] = func;
+                const new_env = params.reduce(function(env, name, i) {
                     env[name] = args[i];
                     return env;
                 }, Object.create(env));
