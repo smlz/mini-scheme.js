@@ -63,19 +63,30 @@
             const [_, name, exp] = x;
             env[name] = evaluate(exp, env);
         } else if (x[0] === "func") {
-            const [_, params, body] = x;
-            return ["func", params, body, env];  // Nothing to do for now
+            const [_, arg_names, body] = x;
+            // Do nothing for now, except store the current environment
+            // together with the function definition.
+            return ["func", arg_names, body, env];
         } else {
+            // Function call (no special form)
             const [func, ...args] = x.map(exp => evaluate(exp, env));
             if (typeof func === "function") {
+                // Native JavaScript function call
                 return func(...args);
             } else {
-                const [_, params, body, env] = func;
-                const new_env = params.reduce(function(env, name, i) {
+                // MiniScheme function call
+                const [_, arg_names, body, definition_env] = func;
+
+                // Create a new function calling environment with the supplied
+                // argument names and values. Link to the environment at
+                // function definition as outer environment.
+                const call_env = arg_names.reduce(function(env, name, i) {
                     env[name] = args[i];
                     return env;
-                }, Object.create(env));
-                return evaluate(body, new_env);
+                }, Object.create(definition_env));
+
+                // Evaluate the function body with the newly created environment
+                return evaluate(body, call_env);
             }
         }
     }
