@@ -5,7 +5,13 @@
 (function() {
 
     function tokenize(text) {
-        return text.replace(/\(/g, " ( ").replace(/\)/g, " ) ").replace(/\n/g, " ").split(" ").filter(Boolean);
+        return text
+            .replace(/\(/g, " ( ")
+            .replace(/\)/g, " ) ")
+            .replace(/--.*$/gm, "")
+            .replace(/\n/g, " ")
+            .split(" ")
+            .filter(Boolean);
     }
 
     function parse(tokens) {
