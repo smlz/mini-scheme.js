@@ -35,28 +35,7 @@
         }
     }
 
-    function Env(params=[], args=[], outer=undefined) {
-        var self = {};
-        self.env = params.reduce(function(acc, name, i) {
-            acc[name] = args[i];
-            return acc;
-        }, {});
-        self.outer = outer;
-        self.get = function(name) {
-            if (self.env.hasOwnProperty(name)) {
-                return self.env[name];
-            } else {
-                return self.outer.get(name);
-            }
-        };
-        self.set = function(name, val) {
-            self.env[name] = val;
-        };
-        return self;
-    }
-
-    var global_env = Env();
-    global_env.env = {
+    const global_env = {
         "+": (a, b) => a + b,
         "-": (a, b) => a - b,
         "*": (a, b) => a * b,
@@ -66,7 +45,7 @@
 
     function evaluate(x, env=global_env) {
         if (typeof x === "string") {
-            return env.get(x);
+            return env[x];
         } else if (typeof x === "number") {
             return x;
         } else if (x[0] === "if") {
@@ -75,7 +54,7 @@
             return evaluate(exp, env);
         } else if (x[0] === "define") {
             const [_, name, exp] = x;
-            env.set(name,evaluate(exp, env));
+            env[name] = evaluate(exp, env);
         } else if (x[0] === "func") {
             let [_, params, body] = x;
             return ["func", params, body, env];  // Nothing to do for now
@@ -87,7 +66,11 @@
                 return func(...args);
             } else {
                 let [_, params, body, env] = func;
-                return evaluate(body, Env(params, args, env));
+                let new_env = params.reduce(function(env, name, i) {
+                    env[name] = args[i];
+                    return env;
+                }, Object.create(env));
+                return evaluate(body, new_env);
             }
         }
     }
