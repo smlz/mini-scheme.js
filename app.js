@@ -56,7 +56,7 @@
         "do": (...args) => args[args.length - 1]
     };
 
-    function evaluate(x, env=global_env) {
+    function evaluate(x, env) {
         if (typeof x === "string") {
             return env[x];
         } else if (typeof x === "number") {
@@ -120,7 +120,7 @@
                 return parse(this.tokens);
             },
             result: function() {
-                return evaluate(this.ast);
+                return evaluate(this.ast, Object.create(global_env));
             }
         },
     });
