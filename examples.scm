@@ -1,10 +1,10 @@
--- Simple closure
+; Simple closure
 (begin
   (define make_adder (lambda (x) (lambda (y) (+ x y))))
   ((make_adder 4) 3)
 )
 
--- Calculate square roots (sqrt)
+; Calculate square roots (sqrt)
 (begin
   (define abs (lambda (x) (if (> x 0) x (- 0 x))))
   (define good_enough? (lambda (x guess)
@@ -18,7 +18,7 @@
   (sqrt 2)
 )
 
--- sqrt, hiding internals and using closures
+; sqrt, hiding internals and using closures
 (begin
     (define sqrt (lambda (x) (begin
         (define abs (lambda (a) (if (> a 0) x (- 0 a))))
@@ -34,7 +34,7 @@
     (sqrt 2)
 )
 
--- sqrt: iife
+; sqrt: iife
 ((lambda (x)
     (begin
         (define abs (lambda (a) (if (> a 0) x (- 0 a))))

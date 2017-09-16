@@ -8,7 +8,7 @@
         return text
             .replace(/\(/g, " ( ")
             .replace(/\)/g, " ) ")
-            .replace(/--.*$/gm, "")
+            .replace(/;.*$/gm, "")
             .replace(/\n/g, " ")
             .split(" ")
             .filter(Boolean);
