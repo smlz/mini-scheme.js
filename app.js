@@ -94,7 +94,7 @@
             return ["lambda", arg_names, body, env];
         } else {
             // Function call (no special form)
-            const func_name = x[0];
+            const func_name = typeof x[0] === "string" ? x[0] : "<lambda>";
             const [func, ...args] = x.map(exp => evaluate(exp, env));
             if (typeof func === "function") {
                 // Native JavaScript function call
