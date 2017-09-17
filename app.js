@@ -58,18 +58,37 @@
 
     function evaluate(x, env) {
         if (typeof x === "string") {
+            const res = env[x];
+            if (typeof res === "undefined") {
+                throw Error("Variable '" + x + "' not found");
+            }
             return env[x];
         } else if (typeof x === "number") {
             return x;
         } else if (x[0] === "if") {
+            if (x.length != 4) {
+                throw Error("Wrong number of arguments for if: " +
+                    (x.length - 1) + " != 3");
+            }
             const [_, test, conseq, alt] = x;
             const exp = evaluate(test, env) ? conseq : alt;
             return evaluate(exp, env);
         } else if (x[0] === "define") {
+            if (x.length != 3) {
+                throw Error("Wrong number of arguments for define: " +
+                    (x.length - 1) + " != 2");
+            }
             const [_, name, exp] = x;
             env[name] = evaluate(exp, env);
         } else if (x[0] === "lambda") {
+            if (x.length != 3) {
+                throw Error("Wrong number of arguments for lambda: " +
+                    (x.length - 1) + " != 2");
+            }
             const [_, arg_names, body] = x;
+            if (!(arg_names instanceof Array)) {
+                throw Error("Function arguments must be a list");
+            }
             // Do nothing for now, except store the current environment
             // together with the function definition.
             return ["lambda", arg_names, body, env];
@@ -77,14 +96,17 @@
             // Function call (no special form)
             const func_name = x[0];
             const [func, ...args] = x.map(exp => evaluate(exp, env));
-            if (typeof func === "undefined") {
-                throw Error("Unknown function name: " + func_name);
-            } else if (typeof func === "function") {
+            if (typeof func === "function") {
                 // Native JavaScript function call
                 return func(...args);
-            } else {
+            } else if (func instanceof Array) {
                 // MiniScheme function call
                 const [_, arg_names, body, definition_env] = func;
+                if (arg_names.length !== args.length) {
+                    throw Error("Wrong number of arguments for function " +
+                        func_name + ". " + args.length + " supplied, " +
+                        arg_names.length + " needed");
+                }
 
                 // Create a new function calling environment with the supplied
                 // argument names and values. Link to the environment at
@@ -96,6 +118,8 @@
 
                 // Evaluate the function body with the newly created environment
                 return evaluate(body, call_env);
+            } else {
+                throw Error("Invalid function: " + func_name);
             }
         }
     }
