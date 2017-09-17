@@ -116,6 +116,8 @@
             input: "",
             tokens: [],
             ast: [],
+            env: {},
+            global_env: global_env,
             result: undefined,
             error: false,
             debug: true
@@ -134,7 +136,8 @@
                 try {
                     this.tokens = tokenize(val);
                     this.ast = parse(this.tokens.slice());
-                    this.result = evaluate(this.ast, Object.create(global_env));
+                    this.env = Object.create(this.global_env);
+                    this.result = evaluate(this.ast, this.env);
                 } catch (error) {
                     this.error = error.message;
                 }

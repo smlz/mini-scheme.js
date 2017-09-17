@@ -29,24 +29,32 @@ small.error {
   color: red;
 }
 
-div.ast h4, div.tokens h4 {
+div.ast h4, div.tokens h4, #app div.env:first h4 {
   margin-top: 0;
 }
 
 div.ast {
   float: left;
-  width: 60%;
+  width: 40%;
 }
 
 div.tokens {
   float: left;
-  width: 40%;
+  width: calc(40% - 20px);
+  margin-left: 20px;
+}
+
+div.env {
+  float: left;
+  width: calc(20% - 20px);
+  margin-left: 20px;
 }
 
 hr {
   clear: both;
   border: none;
 }
+
 span.token {
   border: 2px darkblue solid;
   background-color: lightblue;
@@ -55,11 +63,27 @@ span.token {
   line-height: 2.2;
 }
 
+ul.env {
+  display: inline-block;
+  list-style: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+ul.env li {
+  border: 2px solid darkgoldenrod;
+  background-color: lightgoldenrodyellow;
+  padding: 2px 5px;
+  border-radius: 4px;
+  margin: 3px 0;
+}
+
 div.ast > li {
   list-style: none;
 }
 
-ul {
+ul.ast {
   display: inline-block;
   list-style: disclosure-closed inside;
   vertical-align: middle;
