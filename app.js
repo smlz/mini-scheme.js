@@ -16,7 +16,7 @@
 
     function parse(tokens) {
         if (tokens.length === 0) {
-            throw SyntaxError("Unexpected EOF while reading");
+            throw SyntaxError("Unexpected end of program while reading");
         }
         var token = tokens.shift();
         if (token === "(") {
@@ -94,7 +94,7 @@
             return ["lambda", arg_names, body, env];
         } else {
             // Function call (no special form)
-            const func_name = typeof x[0] === "string" ? x[0] : "<lambda>";
+            const func_name = typeof x[0] === "string" ? x[0] : "<anon>";
             const [func, ...args] = x.map(exp => evaluate(exp, env));
             if (typeof func === "function") {
                 // Native JavaScript function call
@@ -105,7 +105,7 @@
                 if (arg_names.length !== args.length) {
                     throw Error("Wrong number of arguments for function " +
                         func_name + ". " + args.length + " supplied, " +
-                        arg_names.length + " needed");
+                        arg_names.length + " needed.");
                 }
 
                 // Create a new function calling environment with the supplied
