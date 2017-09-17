@@ -143,9 +143,16 @@
     });
 
     // Example input:
-    vm.input =
-        "(begin\n" +
-        "  (define make_adder (lambda (x) (lambda (y) (+ x y))))\n" +
-        "  ((make_adder 4) 3)\n" +
-        ")";
+    vm.input = `(begin
+    (define sqrt (lambda (x) (begin
+        (define abs (lambda (a) (if (> a 0) x (- 0 a))))
+        (define good_enough? (lambda (guess)
+            (<= (abs (- x (* guess guess))) 0.000001)
+        ))
+        (define avg  (lambda (a b) (/ (+ a b) 2) ))
+        (define sqrt_iter (lambda (guess)
+            (if (good_enough? guess) guess (sqrt_iter (avg guess (/ x guess))))
+        ))
+        (sqrt_iter 1))))
+    (sqrt 2))`;
 }());
