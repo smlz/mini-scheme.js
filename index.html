@@ -34,7 +34,7 @@
         <h4>Environment</h4>
         <ul class="env">
           <li v-for="(val, key) in env">
-            <span class="env"><strong>{{key}}</strong> : {{typeof val === "function" ? "function": "number"}}</span>&nbsp;
+            <span class="env"><strong>{{key}}</strong> : {{typeof val === "object" ? "function": "number"}}</span>&nbsp;
           </li>
         </ul>
         <h4>Global Environment</h4>
