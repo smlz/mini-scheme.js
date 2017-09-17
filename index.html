@@ -18,10 +18,6 @@
         <h4>Result</h4>
         <p class="code">{{result}}</p>
       </template>
-      <div class="ast">
-        <h4>AST</h4>
-        <item :model="ast"></item>
-      </div>
       <div class="tokens">
         <h4>Tokens</h4>
         <p>
@@ -30,17 +26,21 @@
           </template>
         </p>
       </div>
+      <div class="ast">
+        <h4>Syntax Tree</h4>
+        <item :model="ast"></item>
+      </div>
       <div class="env">
         <h4>Environment</h4>
         <ul class="env">
           <li v-for="(val, key) in env">
-            <span class="env"><strong>{{key}}</strong> : {{typeof val === "object" ? "function": "number"}}</span>&nbsp;
+            <strong>{{key}}</strong> : {{typeof val === "object" ? "function": "number"}}
           </li>
         </ul>
         <h4>Global Environment</h4>
         <ul class="env">
           <li v-for="(val, key) in global_env">
-            <span class="env"><strong>{{key}}</strong> : {{typeof val === "function" ? "function": "number"}}</span>&nbsp;
+            <strong>{{key}}</strong> : {{typeof val === "function" ? "function": "number"}}
           </li>
         </ul>
         <h4>Special Forms</h4>

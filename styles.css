@@ -35,18 +35,18 @@ div.ast h4, div.tokens h4, #app div.env:first h4 {
 
 div.ast {
   float: left;
-  width: 40%;
+  width: calc(45% - 20px);
+  margin-left: 20px;
 }
 
 div.tokens {
   float: left;
-  width: calc(40% - 20px);
-  margin-left: 20px;
+  width: 30%;
 }
 
 div.env {
   float: left;
-  width: calc(20% - 20px);
+  width: calc(25% - 20px);
   margin-left: 20px;
 }
 
