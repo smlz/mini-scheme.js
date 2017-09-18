@@ -23,8 +23,8 @@
       <div class="tokens">
         <h4>Tokens</h4>
         <p>
-          <template v-for="token in tokens" :key="token">
-            <span class="token">{{token}}</span>&nbsp;
+          <template v-for="token in tokens">
+            <span class="token" :key="token">{{token}}</span>&nbsp;
           </template>
         </p>
       </div>
