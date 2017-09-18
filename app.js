@@ -92,6 +92,12 @@
                     (x.length - 1) + " != 2");
             }
             const [_, name, exp] = x;
+            if (typeof name !== "string"){
+                throw Error("Name of a definition is not a string: " +
+                    typeof name);
+            } else if ("begin define if lambda".split(" ").includes(name)) {
+                throw Error("Invalid name of a definition: " + name);
+            }
             env[name] = evaluate(exp, env);
         } else if (x[0] === "begin") {
             if (x.length < 2) {
