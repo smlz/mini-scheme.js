@@ -9,11 +9,11 @@
     <h1>mini-scheme.js</h1>
     <div id="app">
       <h4>Source</h4>
+      <code class="chrome">(begin</code>
+      <textarea v-model="input"></textarea><br>
       <small v-if="parenBalance > 0">{{parenBalance}} open paren</small>
       <small v-else-if="parenBalance < 0" class="error">{{-parenBalance}} extra closed paren</small>
       <small v-else>&nbsp;</small>
-      <code class="chrome">(begin</code>
-      <textarea v-model="input"></textarea><br>
       <code class="chrome">)</code>
       <p v-if="error" class="error"><strong>{{error.name}}: </strong>{{error.message}}</p>
       <template v-else>
@@ -23,7 +23,7 @@
       <div class="tokens">
         <h4>Tokens</h4>
         <p>
-          <template v-for="token in tokens">
+          <template v-for="token in tokens" :key="token">
             <span class="token">{{token}}</span>&nbsp;
           </template>
         </p>
@@ -35,13 +35,13 @@
       <div class="env">
         <h4>Environment</h4>
         <ul class="env">
-          <li v-for="(val, key) in env">
+          <li v-for="(val, key) in env" :key="key">
             <strong>{{key}}</strong> : {{typeof val === "object" ? "function": "number"}}
           </li>
         </ul>
         <h4>Global Environment</h4>
         <ul class="env">
-          <li v-for="(val, key) in global_env">
+          <li v-for="(val, key) in global_env" :key="key">
             <strong>{{key}}</strong> : {{typeof val === "function" ? "function": "number"}}
           </li>
         </ul>
