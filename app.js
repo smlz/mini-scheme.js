@@ -5,6 +5,9 @@
 (function() {
 
     function tokenize(text) {
+        if (text.split("(").length !== text.split(")").length) {
+            throw (SyntaxError("Parentheses missmatch."));
+        }
         return text
             .replace(/\(/g, " ( ")
             .replace(/\)/g, " ) ")
