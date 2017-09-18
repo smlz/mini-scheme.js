@@ -3,6 +3,7 @@
 /* global Vue */
 
 (function() {
+    "use strict"
 
     function tokenize(text) {
         if (text.split("(").length !== text.split(")").length) {
