@@ -14,7 +14,7 @@ code.chrome {
 
 textarea {
   width: calc(100% - 44px);
-  height: 210px;
+  height: 250px;
   margin-left: 40px;
   padding: 1px;
 }

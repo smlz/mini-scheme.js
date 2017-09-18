@@ -202,15 +202,17 @@
     });
 
     // Example input:
-    vm.input = `(define sqrt (lambda (x) (begin
-    (define abs (lambda (a) (if (> a 0) x (- 0 a))))
+    vm.input = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
+(define avg  (lambda (a b) (/ (+ a b) 2) ))
+(define sqrt (lambda (x) (begin
+    (define start_guess 1)
+    (define tolerance 0.000001)
     (define good_enough? (lambda (guess)
-        (<= (abs (- x (* guess guess))) 0.000001)
+        (<= (abs (- x (* guess guess))) tolerance)
     ))
-    (define avg  (lambda (a b) (/ (+ a b) 2) ))
     (define sqrt_iter (lambda (guess)
         (if (good_enough? guess) guess (sqrt_iter (avg guess (/ x guess))))
     ))
-    (sqrt_iter 1))))
+    (sqrt_iter start_guess))))
 (sqrt 2)`;
 }());
