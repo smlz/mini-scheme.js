@@ -175,7 +175,16 @@
                     this.tokens = tokenize(val);
                     this.ast = parse(this.tokens.slice());
                     this.env = Object.create(this.global_env);
-                    this.result = evaluate(this.ast, this.env);
+                    let result = evaluate(this.ast, this.env);
+                    if (result instanceof Array) {
+                        const pprint = tree => tree instanceof Array ?
+                            "(" + tree.map(pprint).join(" ") + ")" : tree;
+                        this.result = pprint(result.slice(0, -1));
+                    } else if (typeof result === "function") {
+                        this.result = "native function: " + result.name;
+                    } else {
+                        this.result = result;
+                    }
                 } catch (error) {
                     this.error = error;
                 }
