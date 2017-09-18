@@ -133,7 +133,11 @@
                 // Evaluate the function body with the newly created environment
                 return evaluate(body, call_env);
             } else {
-                throw Error("Invalid function: " + func_name);
+                if (typeof func === "undefined") {
+                    throw Error("No function supplied.");
+                } else {
+                    throw Error("Invalid function: " + func_name);
+                }
             }
         }
     }
