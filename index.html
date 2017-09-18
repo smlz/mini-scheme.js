@@ -15,6 +15,7 @@
       <code class="chrome">(begin</code>
       <textarea v-model="input"></textarea><br>
       <code class="chrome">)</code>
+      <p v-if="error" class="error"><strong>{{error.name}}: </strong>{{error.message}}</p>
       <template v-else>
         <h4>Result</h4>
         <p class="code">{{result}}</p>

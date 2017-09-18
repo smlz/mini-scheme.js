@@ -177,7 +177,7 @@
                     this.env = Object.create(this.global_env);
                     this.result = evaluate(this.ast, this.env);
                 } catch (error) {
-                    this.error = error.message;
+                    this.error = error;
                 }
             }
         },
