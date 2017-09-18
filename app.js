@@ -6,7 +6,7 @@
 
     function tokenize(text) {
         if (text.split("(").length !== text.split(")").length) {
-            throw (SyntaxError("Parentheses missmatch."));
+            throw SyntaxError("Parentheses missmatch.");
         }
         return text
             .replace(/\(/g, " ( ")
@@ -18,10 +18,6 @@
     }
 
     function parse(tokens) {
-        if (tokens.length === 0) {
-            throw SyntaxError("Enter code.");
-        }
-
         var current = ["begin"];
         const stack = [current];
 
@@ -33,7 +29,7 @@
                 stack.push(current);
             } else if (token === ")") {
                 if (stack.length === 1) {
-                    throw (SyntaxError("Program ended prematurely."));
+                    throw SyntaxError("Do not close the main 'begin' block.");
                 }
                 stack.pop();
                 current = stack[stack.length - 1];
@@ -42,7 +38,7 @@
             }
         }
         if (stack.length > 1) {
-            throw (SyntaxError("Program not finished.")); // Should not happen
+            throw SyntaxError("Program not finished."); // Should not happen
         }
         return stack[0];
     }
