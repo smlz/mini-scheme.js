@@ -67,7 +67,6 @@
         ">=": (a, b) => a >= b,
         "<": (a, b) => a < b,
         "<=": (a, b) => a <= b,
-        "begin": (...args) => args[args.length - 1]
     };
 
     function evaluate(x, env) {
@@ -94,6 +93,12 @@
             }
             const [_, name, exp] = x;
             env[name] = evaluate(exp, env);
+        } else if (x[0] === "begin") {
+            if (x.length < 2) {
+                throw Error("At least one expression required in begin block.");
+            }
+            const [_, ...exps] = x;
+            return exps.map(exp => evaluate(exp, env)).slice(-1)[0];
         } else if (x[0] === "lambda") {
             if (x.length != 3) {
                 throw Error("Wrong number of arguments for lambda: " +
