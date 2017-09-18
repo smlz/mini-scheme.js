@@ -10,7 +10,7 @@
     <div id="app">
       <h4>Source</h4>
       <code class="chrome">(begin</code>
-      <textarea v-model="input"></textarea><br>
+      <textarea v-model="input" spellcheck="false"></textarea><br>
       <small v-if="parenBalance > 0">{{parenBalance}} open paren</small>
       <small v-else-if="parenBalance < 0" class="error">{{-parenBalance}} extra closed paren</small>
       <small v-else>&nbsp;</small>
