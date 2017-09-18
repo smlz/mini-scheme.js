@@ -19,21 +19,32 @@
 
     function parse(tokens) {
         if (tokens.length === 0) {
-            throw SyntaxError("Unexpected end of program while reading");
+            throw SyntaxError("Enter code.");
         }
-        var token = tokens.shift();
-        if (token === "(") {
-            var list = [];
-            while (tokens[0] !== ")") {
-                list.push(parse(tokens));
+
+        var current = ["begin"];
+        const stack = [current];
+
+        for (let token of tokens) {
+            if (token === "(") {
+                let old = current;
+                current = [];
+                old.push(current);
+                stack.push(current);
+            } else if (token === ")") {
+                if (stack.length === 1) {
+                    throw (SyntaxError("Program ended prematurely."));
+                }
+                stack.pop();
+                current = stack[stack.length - 1];
+            } else {
+                current.push(atom(token));
             }
-            tokens.shift();
-            return list;
-        } else if (token === ")") {
-            throw SyntaxError("Unexpected )");
-        } else {
-            return atom(token);
         }
+        if (stack.length > 1) {
+            throw (SyntaxError("Program not finished.")); // Should not happen
+        }
+        return stack[0];
     }
 
     function atom(token) {
