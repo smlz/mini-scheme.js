@@ -12,8 +12,9 @@
       <small v-if="parenBalance > 0">{{parenBalance}} open paren</small>
       <small v-else-if="parenBalance < 0" class="error">{{-parenBalance}} extra closed paren</small>
       <small v-else>&nbsp;</small>
-      <textarea v-model="input" rows="12"></textarea><br>
-      <p v-if="error" class="error"><strong>Error: </strong>{{error}}</p>
+      <code class="chrome">(begin</code>
+      <textarea v-model="input"></textarea><br>
+      <code class="chrome">)</code>
       <template v-else>
         <h4>Result</h4>
         <p class="code">{{result}}</p>
