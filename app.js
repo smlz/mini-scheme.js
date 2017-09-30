@@ -49,10 +49,6 @@
                 current = [];
                 current.line = token.line;
                 current.col = token.col;
-                current.colapsed = true;
-                current.toggleColapse = function() {
-                    this.colapsed = !this.colapsed;
-                };
                 old.push(current);
                 stack.push(current);
             } else if (token.valueOf() === ")") {
@@ -172,11 +168,37 @@
 
     Vue.component("item", {
         template: "#item-template",
-        props: ["model"],
+        props: ["model", "index", "parentToggle", "parentModel"],
+        data: function() {
+            return {
+                collapsed: false,
+            };
+        },
         computed: {
             isList: function() {
                 return this.model instanceof Array;
-            }
+            },
+            isLambdaArgList: function() {
+                return this.isList
+                    && this.index === 1
+                    && this.parentModel[0].valueOf() === "lambda";
+            },
+        },
+        methods: {
+            click: function(event) {
+                if (!this.isList) {  //
+                    event.stopPropagation();
+                    if (this.index === 0) {
+                        this.parentToggle();
+                    }
+                    return false;
+                }
+            },
+            toggle: function() {
+                if (!this.isLambdaArgList) {
+                    this.collapsed = !this.collapsed;
+                }
+            },
         },
     });
 

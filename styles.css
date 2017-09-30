@@ -84,22 +84,52 @@ ul.env li {
   margin: 3px 0;
 }
 
-div.ast > li {
+div.ast li {
+  font-weight: normal;
+  padding-left: 10px;
+  text-indent: -10px;
   list-style: none;
 }
 
-ul.ast {
-  display: inline-block;
-  list-style: disclosure-closed inside;
-  vertical-align: middle;
-  margin: 3px 0;
-  padding: 1px 5px;
-  border: 3px solid green;
-  border-radius: 9px;
+div.ast li li::before {
+  content: "\00a0";
+  padding-right: 5px;
 }
 
-li {
-  padding: 0;
+div.ast ul:not(.lambdaArgList) > li:first-child {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+div.ast ul:not(.lambdaArgList) > li:first-child:before {
+  content: "▼";
+}
+
+div.ast ul.collapsed > li:first-child:before {
+  content: "▶";
+}
+
+div.ast ul.collapsed > li:first-child:after {
+  content: " [...]";
+}
+
+div.ast li.lambda, div.ast li.define, div.ast li.if, div.ast li.begin {
+  /* special forms */
+  font-style: italic;
+}
+
+div.ast ul.collapsed > li:first-child ~ li {
+  display: none;
+}
+
+div.ast ul {
+  display: inline-block;
+  list-style: none;
+  vertical-align: middle;
+  margin: 3px 0px;
+  padding: 1px 10px 1px 5px;
+  border: 3px solid green;
+  border-radius: 9px;
 }
 
 li, span.token, textarea, p.code, code {

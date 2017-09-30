@@ -60,10 +60,14 @@
 
     <!-- item template -->
     <script type="text/x-template" id="item-template">
-      <li v-if="isList"><ul class="ast">
-        <item v-for="item in model" :key="item.toString()" :model="item"></item>
-      </ul></li>
-      <li v-else>{{model.valueOf()}}</label></li>
+      <li v-if="isList">
+        <ul :class="{collapsed: collapsed, lambdaArgList: isLambdaArgList}" >
+          <item v-for="(item, idx) of model" :key="item.toString()"
+                :model="item" :index="idx" :parentToggle="toggle"
+                :parentModel="model"></item>
+        </ul>
+      </li>
+      <li v-else :class="model.valueOf()" v-on:click="click">{{model.valueOf()}}</li>
     </script>
     <script src="vue.js" charset="utf-8"></script>
     <script src="app.js" charset="utf-8"></script>
