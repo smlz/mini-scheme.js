@@ -251,26 +251,7 @@
                     this.ast = parse(this.tokens.slice());
                     this.env = Object.create(this.global_env);
 
-                    // let evaluate_gen = evaluate(this.ast, this.env);
-                    // while (!done) {
-                    //     var {value: result, done} = evaluate_gen.next();
-                    //     console.log(result);
-                    // }
                     this.eval_gen = evaluate(this.ast, this.env);
-                    // while (!done) {
-                    //     var {value: result, done} = evaluate_gen.next();
-                    //     console.log(result);
-                    // }
-
-                    // if (result instanceof Array) {
-                    //     const pprint = tree => tree instanceof Array ?
-                    //         "(" + tree.map(pprint).join(" ") + ")" : tree;
-                    //     this.result = pprint(result.slice(0, -1));
-                    // } else if (typeof result === "function") {
-                    //     this.result = "native function: " + result.name;
-                    // } else {
-                    //     this.result = result;
-                    // }
                 } catch (error) {
                     this.error = error;
                 }
