@@ -10,7 +10,9 @@
             throw SyntaxError("Parentheses missmatch.");
         }
         let line = 1, col = 1, result = [];
+        let token_index = 0;
         for (let token of text.split(/(\(|\)| |\n)/)) {
+            let node = null;
             if (token === ""){
                 //nothing
             } else if (token === " ") {
@@ -19,21 +21,27 @@
                 col = 1;
                 line += 1;
             } else if (token[0] in "1234567890".split("")) {
-                let number = new Number(token);
-                if (Number.isNaN(number.valueOf())) {
+                node = new Number(token);
+                if (Number.isNaN(node.valueOf())) {
                     throw new SyntaxError(`Not a number: ${token} (Line: ${line}, column: ${col})`);
                 }
-                number.line = line;
-                number.col = col;
-                number.length = token.length;
-                result.push(number);
-                col += token.length;
+                node.line = line;
+                node.col = col;
+                node.length = token.length;
             } else {
-                let str = new String(token);
-                str.line = line;
-                str.col = col;
-                result.push(str);
+                node = new String(token);
+                node.line = line;
+                node.col = col;
+            }
+            
+            // finish up node creation
+            if (node) {
+                // set token id
+                node.id = 'token_' + token_index;
+                // push
+                result.push(node);
                 col += token.length;
+                token_index += 1;
             }
         }
         return result;
