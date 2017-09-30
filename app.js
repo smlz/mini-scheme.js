@@ -96,22 +96,54 @@
             if (typeof res === "undefined") {
                 throw Error("Variable '" + x + "' not found");
             }
+            x.started = true;
+            yield x;
             return env[x];
         } else if (x instanceof Number) {
+            x.doing = true;
+            yield x;
             return x.valueOf();
         } else if (x[0].valueOf() === "begin") {
             if (x.length < 2) {
                 throw Error("At least one expression required in begin block.");
             }
             const [_, ...exps] = x;
-            return exps.map(exp => yield * evaluate(exp, env)).slice(-1)[0];
+
+            // because we're yield'ing map is not allowed...
+            // 
+            // return exps.map(exp => evaluate(exp, env)).slice(-1)[0];
+            // 
+            var last_evald = undefined;
+            for (var i=0; i<exps.length; i++) {
+                last_evald = yield* evaluate(exps[i], env);
+            }
+            return last_evald
         } else {
             // Function call (no special form)
             const func_name = typeof x[0] === "string" ? x[0] : "<anon>";
-            const [func, ...args] = x.map(exp => yield * evaluate(exp, env));
+
+            // because we're yield'ing map is not allowed...
+            // 
+            // const [func, ...args] = x.map(exp => yield * evaluate(exp, env));
+            // 
+            var evald = []
+            var first_tok, last_tok;
+            for (var i=0; i<x.length; i++) {
+                let oneeval = yield* evaluate(x[i], env);
+                evald.push(oneeval);
+                first_tok = x[0];
+                last_tok = x[x.length-1];
+            }
+            const [func, ...args] = evald;
+
             if (typeof func === "function") {
                 // Native JavaScript function call
-                return func(...args);
+                let func_result = func(...args);
+                first_tok.started = false;
+                first_tok.doing = true;
+                yield first_tok;
+
+                return func_result;
             } else if (func instanceof Array) {
                 // MiniScheme function call
                 const [_, arg_names, body, definition_env] = func;
@@ -181,12 +213,48 @@
             global_env: global_env,
             result: undefined,
             error: false,
-            debug: true
+            debug: true,
+            eval_gen: undefined,
         },
         computed: {
             parenBalance: function() {
                 return this.input.split("(").length -
                        this.input.split(")").length;
+            }
+        },
+        methods: {
+            step: function() {
+                this.result = undefined;
+
+                if (true) {
+                    var {value: result, done} = this.eval_gen.next();
+                    
+                    // tell vue to update token list
+                    let token_idx = this.tokens.findIndex(el => el.id == result.id);
+                    Vue.set(this.tokens, token_idx, result);
+                    if (!done) {
+                        return result;
+                    }
+                } else {
+                    while (!done) {
+                        var {value: result, done} = this.eval_gen.next();
+                        console.log(result);
+                    }
+                }
+
+                // we're done stepping: reset eval_gen to null
+                this.eval_gen = null;
+
+                // return final result
+                if (result instanceof Array) {
+                    const pprint = tree => tree instanceof Array ?
+                        "(" + tree.map(pprint).join(" ") + ")" : tree;
+                    this.result = pprint(result.slice(0, -1));
+                } else if (typeof result === "function") {
+                    this.result = "native function: " + result.name;
+                } else {
+                    this.result = result;
+                }
             }
         },
         watch: {
@@ -199,20 +267,7 @@
                     this.ast = parse(this.tokens.slice());
                     this.env = Object.create(this.global_env);
 
-                    let evaluate_gen = evaluate(this.ast, this.env);
-                    while (!done) {
-                        var {value: result, done} = evaluate_gen.next();
-                    }
-
-                    if (result instanceof Array) {
-                        const pprint = tree => tree instanceof Array ?
-                            "(" + tree.map(pprint).join(" ") + ")" : tree;
-                        this.result = pprint(result.slice(0, -1));
-                    } else if (typeof result === "function") {
-                        this.result = "native function: " + result.name;
-                    } else {
-                        this.result = result;
-                    }
+                    this.eval_gen = evaluate(this.ast, this.env);
                 } catch (error) {
                     this.error = error;
                 }
@@ -221,7 +276,7 @@
     });
 
     // Example input:
-    vm.input = `(+ 2 2)`;
+    vm.input = `(+ (+ 2 2) 5)`;
 
     vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
