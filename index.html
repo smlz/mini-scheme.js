@@ -24,7 +24,8 @@
         <h4>Tokens</h4>
         <p>
           <template v-for="token in tokens">
-            <span class="token" :key="token.valueOf()">{{token.valueOf()}}</span>&nbsp;
+            <span class="token tooltip" :key="token.valueOf()">{{token.valueOf()}}<span
+               class="tooltiptext">Line: {{token.line}}:{{token.col}}</span></span>&nbsp;
           </template>
         </p>
       </div>
