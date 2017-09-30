@@ -24,7 +24,7 @@
         <h4>Tokens</h4>
         <p>
           <template v-for="token in tokens">
-            <span class="token" :key="token">{{token}}</span>&nbsp;
+            <span class="token" :key="token.valueOf()">{{token.valueOf()}}</span>&nbsp;
           </template>
         </p>
       </div>
@@ -63,7 +63,7 @@
       <li v-if="isList"><ul class="ast">
         <item v-for="item in model" :key="item.toString()" :model="item"></item>
       </ul></li>
-      <li v-else>{{model}}</li>
+      <li v-else>{{model.valueOf()}}</label></li>
     </script>
     <script src="vue.js" charset="utf-8"></script>
     <script src="app.js" charset="utf-8"></script>
