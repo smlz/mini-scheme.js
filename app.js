@@ -104,7 +104,16 @@
                 throw Error("At least one expression required in begin block.");
             }
             const [_, ...exps] = x;
-            return exps.map(exp => evaluate(exp, env)).slice(-1)[0];
+
+            // because we're yield'ing map is not allowed...
+            // 
+            // return exps.map(exp => evaluate(exp, env)).slice(-1)[0];
+            // 
+            var last_evald = undefined;
+            for (var i=0; i<exps.length; i++) {
+                last_evald = yield* evaluate(exps[i], env);
+            }
+            return last_evald
         } else {
             // Function call (no special form)
             const func_name = typeof x[0] === "string" ? x[0] : "<anon>";
