@@ -17,8 +17,9 @@
       <code class="chrome">)</code>
       <p v-if="error" class="error"><strong>{{error.name}}: </strong>{{error.message}}</p>
       <template v-else>
+
         <h4>Step</h4>
-        <p class="code"><button>Step</button></p>
+        <p v-if="eval_gen" class="code"><button v-on:click="step">Step</button></p>
         <h4>Result</h4>
         <p class="code">{{result}}</p>
       </template>
