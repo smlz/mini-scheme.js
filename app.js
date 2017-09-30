@@ -96,6 +96,8 @@
             if (typeof res === "undefined") {
                 throw Error("Variable '" + x + "' not found");
             }
+            x.doing = true;
+            yield x;
             return env[x];
         } else if (x instanceof Number) {
             x.doing = true;
@@ -277,7 +279,7 @@
     });
 
     // Example input:
-    vm.input = `(+ 2 2)`;
+    vm.input = `(+ (+ 2 2) 5)`;
 
     vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
