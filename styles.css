@@ -68,6 +68,14 @@ span.token {
   line-height: 2.2;
 }
 
+span.tokendone {
+  border: 2px darkblue solid;
+  background-color: #BCADE6;
+  padding: 2px 5px;
+  border-radius: 4px;
+  line-height: 2.2;
+}
+
 ul.env {
   display: inline-block;
   list-style: none;

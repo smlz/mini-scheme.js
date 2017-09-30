@@ -17,6 +17,8 @@
       <code class="chrome">)</code>
       <p v-if="error" class="error"><strong>{{error.name}}: </strong>{{error.message}}</p>
       <template v-else>
+        <h4>Step</h4>
+        <p class="code"><button>Step</button></p>
         <h4>Result</h4>
         <p class="code">{{result}}</p>
       </template>
@@ -24,8 +26,8 @@
         <h4>Tokens</h4>
         <p>
           <template v-for="token in tokens">
-            <span class="token tooltip" :key="token.valueOf()">{{token.valueOf()}}<span
-               class="tooltiptext">Line: {{token.line}}:{{token.col}}</span></span>&nbsp;
+            <span v-bind:id="token.id" class="token tooltip" v-bind:class="{tokendone: token.doing}" :key="token.valueOf()">
+              {{token.valueOf()}}<span class="tooltiptext">Line: {{token.line}}:{{token.col}}</span></span>&nbsp;
           </template>
         </p>
       </div>

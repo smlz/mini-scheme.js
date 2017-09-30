@@ -3,14 +3,16 @@
 /* global Vue */
 
 (function() {
-    "use strict";
+    // "use strict";
 
     function tokenize(text) {
         if (text.split("(").length !== text.split(")").length) {
             throw SyntaxError("Parentheses missmatch.");
         }
         let line = 1, col = 1, result = [];
+        let token_index = 0;
         for (let token of text.split(/(\(|\)| |\n)/)) {
+            let node = null;
             if (token === ""){
                 //nothing
             } else if (token === " ") {
@@ -19,21 +21,27 @@
                 col = 1;
                 line += 1;
             } else if (token[0] in "1234567890".split("")) {
-                let number = new Number(token);
-                if (Number.isNaN(number.valueOf())) {
+                node = new Number(token);
+                if (Number.isNaN(node.valueOf())) {
                     throw new SyntaxError(`Not a number: ${token} (Line: ${line}, column: ${col})`);
                 }
-                number.line = line;
-                number.col = col;
-                number.length = token.length;
-                result.push(number);
-                col += token.length;
+                node.line = line;
+                node.col = col;
+                node.length = token.length;
             } else {
-                let str = new String(token);
-                str.line = line;
-                str.col = col;
-                result.push(str);
+                node = new String(token);
+                node.line = line;
+                node.col = col;
+            }
+            
+            // finish up node creation
+            if (node) {
+                // set token id
+                node.id = 'token_' + token_index;
+                // push
+                result.push(node);
                 col += token.length;
+                token_index += 1;
             }
         }
         return result;
@@ -82,7 +90,7 @@
         "<=": (a, b) => a <= b,
     };
 
-    function evaluate(x, env) {
+    function* evaluate(x, env) {
         if (x instanceof String) {
             const res = env[x.valueOf()];
             if (typeof res === "undefined") {
@@ -91,49 +99,16 @@
             return env[x];
         } else if (x instanceof Number) {
             return x.valueOf();
-        } else if (x[0].valueOf() === "if") {
-            if (x.length != 4) {
-                throw Error("Wrong number of arguments for if: " +
-                    (x.length - 1) + " != 3");
-            }
-            const [_, test, conseq, alt] = x;
-            const exp = evaluate(test, env) ? conseq : alt;
-            return evaluate(exp, env);
-        } else if (x[0].valueOf() === "define") {
-            if (x.length != 3) {
-                throw Error("Wrong number of arguments for define: " +
-                    (x.length - 1) + " != 2");
-            }
-            const [_, name, exp] = x;
-            if (!(name instanceof String)){
-                throw Error("Name of a definition is not a string: " +
-                    typeof name);
-            } else if ("begin define if lambda".split(" ").includes(name)) {
-                throw Error("Invalid name of a definition: " + name);
-            }
-            env[name.valueOf()] = evaluate(exp, env);
         } else if (x[0].valueOf() === "begin") {
             if (x.length < 2) {
                 throw Error("At least one expression required in begin block.");
             }
             const [_, ...exps] = x;
-            return exps.map(exp => evaluate(exp, env)).slice(-1)[0];
-        } else if (x[0].valueOf() === "lambda") {
-            if (x.length != 3) {
-                throw Error("Wrong number of arguments for lambda: " +
-                    (x.length - 1) + " != 2");
-            }
-            const [_, arg_names, body] = x;
-            if (!(arg_names instanceof Array)) {
-                throw Error("Function arguments must be a list");
-            }
-            // Do nothing for now, except store the current environment
-            // together with the function definition.
-            return ["lambda", arg_names, body, env];
+            return exps.map(exp => yield * evaluate(exp, env)).slice(-1)[0];
         } else {
             // Function call (no special form)
             const func_name = typeof x[0] === "string" ? x[0] : "<anon>";
-            const [func, ...args] = x.map(exp => evaluate(exp, env));
+            const [func, ...args] = x.map(exp => yield * evaluate(exp, env));
             if (typeof func === "function") {
                 // Native JavaScript function call
                 return func(...args);
@@ -156,12 +131,6 @@
 
                 // Evaluate the function body with the newly created environment
                 return evaluate(body, call_env);
-            } else {
-                if (typeof func === "undefined") {
-                    throw Error("No function supplied.");
-                } else {
-                    throw Error("Invalid function: " + func_name);
-                }
             }
         }
     }
@@ -229,7 +198,12 @@
                     this.tokens = tokenize(val);
                     this.ast = parse(this.tokens.slice());
                     this.env = Object.create(this.global_env);
-                    let result = evaluate(this.ast, this.env);
+
+                    let evaluate_gen = evaluate(this.ast, this.env);
+                    while (!done) {
+                        var {value: result, done} = evaluate_gen.next();
+                    }
+
                     if (result instanceof Array) {
                         const pprint = tree => tree instanceof Array ?
                             "(" + tree.map(pprint).join(" ") + ")" : tree;
@@ -247,7 +221,9 @@
     });
 
     // Example input:
-    vm.input = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
+    vm.input = `(+ 2 2)`;
+
+    vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
 (define sqrt (lambda (x) (begin
     (define start_guess 1)
