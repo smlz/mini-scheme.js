@@ -27,7 +27,7 @@
         <h4>Tokens</h4>
         <p>
           <template v-for="token in tokens">
-            <span v-bind:id="token.id" class="token tooltip" v-bind:class="{tokendone: token.doing}" :key="token.valueOf()">
+            <span v-bind:id="token.id" class="token tooltip" v-bind:class="{tokendone: token.doing, tokenstarted: token.started}" :key="token.valueOf()">
               {{token.valueOf()}}<span class="tooltiptext">Line: {{token.line}}:{{token.col}}</span></span>&nbsp;
           </template>
         </p>

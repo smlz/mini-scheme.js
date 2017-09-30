@@ -96,7 +96,7 @@
             if (typeof res === "undefined") {
                 throw Error("Variable '" + x + "' not found");
             }
-            x.doing = true;
+            x.started = true;
             yield x;
             return env[x];
         } else if (x instanceof Number) {
@@ -127,15 +127,23 @@
             // const [func, ...args] = x.map(exp => yield * evaluate(exp, env));
             // 
             var evald = []
+            var first_tok, last_tok;
             for (var i=0; i<x.length; i++) {
                 let oneeval = yield* evaluate(x[i], env);
                 evald.push(oneeval);
+                first_tok = x[0];
+                last_tok = x[x.length-1];
             }
             const [func, ...args] = evald;
 
             if (typeof func === "function") {
                 // Native JavaScript function call
-                return func(...args);
+                let func_result = func(...args);
+                first_tok.started = false;
+                first_tok.doing = true;
+                yield first_tok;
+
+                return func_result;
             } else if (func instanceof Array) {
                 // MiniScheme function call
                 const [_, arg_names, body, definition_env] = func;
@@ -217,13 +225,21 @@
         methods: {
             step: function() {
                 this.result = undefined;
-                var {value: result, done} = this.eval_gen.next();
 
-                // tell vue to update token list
-                let token_idx = this.tokens.findIndex(el => el.id == result.id);
-                Vue.set(this.tokens, token_idx, result);
-                if (!done) {
-                    return result;
+                if (true) {
+                    var {value: result, done} = this.eval_gen.next();
+                    
+                    // tell vue to update token list
+                    let token_idx = this.tokens.findIndex(el => el.id == result.id);
+                    Vue.set(this.tokens, token_idx, result);
+                    if (!done) {
+                        return result;
+                    }
+                } else {
+                    while (!done) {
+                        var {value: result, done} = this.eval_gen.next();
+                        console.log(result);
+                    }
                 }
 
                 // we're done stepping: reset eval_gen to null
