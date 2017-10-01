@@ -216,6 +216,12 @@
                 var last_evald = yield* evaluate(body, call_env);
                 yield* markDone(firstToken);
                 return last_evald;
+            } else {
+                if (typeof func === "undefined") {
+                    throw Error("No function supplied.");
+                } else {
+                    throw Error("Invalid function: " + func_name);
+                }
             }
         }
     }
