@@ -90,18 +90,31 @@
         "<=": (a, b) => a <= b,
     };
 
+    function* markStarted(node) {
+        node.started = true;
+        yield node;
+    }
+
+    function* markDone(node) {
+        node.started = false;
+        node.done = true;
+        yield node;
+    }
+
     function* evaluate(x, env) {
         if (x instanceof String) {
             const res = env[x.valueOf()];
             if (typeof res === "undefined") {
                 throw Error("Variable '" + x + "' not found");
             }
-            x.started = true;
-            yield x;
-            return env[x];
+            yield* markStarted(x);
+            var fromEnv = env[x];
+            if (!Array.isArray(fromEnv) && typeof fromEnv !== "function") {
+                yield* markDone(x);
+            }
+            return fromEnv;
         } else if (x instanceof Number) {
-            x.done = true;
-            yield x;
+            yield* markDone(x);
             return x.valueOf();
         } else if (x[0].valueOf() === "if") {
             if (x.length != 4) {
@@ -124,7 +137,11 @@
             } else if ("begin define if lambda".split(" ").includes(name)) {
                 throw Error("Invalid name of a definition: " + name);
             }
+            yield* markStarted(_);
+            yield* markStarted(name);
             env[name.valueOf()] = yield* evaluate(exp, env);
+            yield* markDone(name);
+            yield* markDone(_);
         } else if (x[0].valueOf() === "begin") {
             if (x.length < 2) {
                 throw Error("At least one expression required in begin block.");
@@ -151,6 +168,8 @@
             }
             // Do nothing for now, except store the current environment
             // together with the function definition.
+            yield* markStarted(x[0]);
+            yield* markDone(x[0]);
             return ["lambda", arg_names, body, env];
         } else {
             // Function call (no special form)
@@ -161,21 +180,19 @@
             // const [func, ...args] = x.map(exp => yield * evaluate(exp, env));
             // 
             var evald = []
-            var first_tok, last_tok;
+            var firstToken, lastToken;
             for (var i=0; i<x.length; i++) {
                 let oneeval = yield* evaluate(x[i], env);
                 evald.push(oneeval);
-                first_tok = x[0];
-                last_tok = x[x.length-1];
+                firstToken = x[0];
+                lastToken = x[x.length-1];
             }
             const [func, ...args] = evald;
 
             if (typeof func === "function") {
                 // Native JavaScript function call
                 let func_result = func(...args);
-                first_tok.started = false;
-                first_tok.done = true;
-                yield first_tok;
+                yield* markDone(firstToken);
 
                 return func_result;
             } else if (func instanceof Array) {
@@ -197,6 +214,7 @@
 
                 // Evaluate the function body with the newly created environment
                 var last_evald = yield* evaluate(body, call_env);
+                yield* markDone(firstToken);
                 return last_evald;
             }
         }
