@@ -110,7 +110,8 @@
             }
             const [_, test, conseq, alt] = x;
             const exp = (yield* evaluate(test, env)) ? conseq : alt;
-            yield* evaluate(exp, env);
+            var last_evald = yield* evaluate(exp, env);
+            return last_evald;
         } else if (x[0].valueOf() === "define") {
             if (x.length != 3) {
                 throw Error("Wrong number of arguments for define: " +
@@ -134,7 +135,7 @@
             // 
             // return exps.map(exp => evaluate(exp, env)).slice(-1)[0];
             // 
-            var last_evald = undefined;
+            var last_evald;
             for (var i=0; i<exps.length; i++) {
                 last_evald = yield* evaluate(exps[i], env);
             }
@@ -311,10 +312,15 @@
     });
 
     // Example input:
-    vm.input =  `(if (< 2 3) 2 3)`;
+    vm.input =  `(define avg  (lambda (a b) (/ (+ a b) 2) ))
+(avg 6 12)`;
 
-vm.input_ =  `(define x 3)
-    (+ (+ 2 2) x)`;
+    vm.input_ =  `(define avg  (lambda (a b) (/ (+ a b) 2) ))
+(if (< 2 3) 2 3)
+`;
+    
+    vm.input_ =  `(define x 3)
+(+ (+ 2 2) x)`;
         
     vm.input_ = `(+ (+ 2 2) 5)`;
 
