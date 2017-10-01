@@ -100,7 +100,7 @@
             yield x;
             return env[x];
         } else if (x instanceof Number) {
-            x.doing = true;
+            x.done = true;
             yield x;
             return x.valueOf();
         } else if (x[0].valueOf() === "if") {
@@ -174,7 +174,7 @@
                 // Native JavaScript function call
                 let func_result = func(...args);
                 first_tok.started = false;
-                first_tok.doing = true;
+                first_tok.done = true;
                 yield first_tok;
 
                 return func_result;
@@ -316,14 +316,12 @@
     vm.input =  `(define avg  (lambda (a b) (/ (+ a b) 2) ))
 (avg 6 12)`;
 
-    vm.input_ =  `(define avg  (lambda (a b) (/ (+ a b) 2) ))
-(if (< 2 3) 2 3)
-`;
+    vm.input_ =  `(if (< 2 3) 2 3)`;
     
     vm.input_ =  `(define x 3)
 (+ (+ 2 2) x)`;
         
-    vm.input = `(+ (+ 2 2) 5)`;
+    vm.input_ = `(+ (+ 2 2) 5)`;
 
     vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
