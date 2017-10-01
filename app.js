@@ -331,17 +331,21 @@
     });
 
     // Example input:
-    vm.input =  `(define avg  (lambda (a b) (/ (+ a b) 2) ))
+    vm.input_ =  `(define avg  (lambda (a b) (/ (+ a b) 2) ))
 (avg 6 12)`;
 
     vm.input_ =  `(if (< 2 3) 2 3)`;
-    
+
+    vm.input_ =  `(define x 4)
+(define avg  (lambda (a b) (/ (+ a b) 2) ))
+(if (< 2 3) (avg x (avg 5 10)) 3)`;
+
     vm.input_ =  `(define x 3)
 (+ (+ 2 2) x)`;
         
     vm.input_ = `(+ (+ 2 2) 5)`;
 
-    vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
+    vm.input = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
 (define sqrt (lambda (x) (begin
     (define start_guess 1)
