@@ -196,7 +196,8 @@
                 }, Object.create(definition_env));
 
                 // Evaluate the function body with the newly created environment
-                return evaluate(body, call_env);
+                var last_evald = yield* evaluate(body, call_env);
+                return last_evald;
             }
         }
     }
@@ -322,7 +323,7 @@
     vm.input_ =  `(define x 3)
 (+ (+ 2 2) x)`;
         
-    vm.input_ = `(+ (+ 2 2) 5)`;
+    vm.input = `(+ (+ 2 2) 5)`;
 
     vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
