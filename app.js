@@ -103,6 +103,27 @@
             x.doing = true;
             yield x;
             return x.valueOf();
+        } else if (x[0].valueOf() === "if") {
+            if (x.length != 4) {
+                throw Error("Wrong number of arguments for if: " +
+                    (x.length - 1) + " != 3");
+            }
+            const [_, test, conseq, alt] = x;
+            const exp = (yield* evaluate(test, env)) ? conseq : alt;
+            yield* evaluate(exp, env);
+        } else if (x[0].valueOf() === "define") {
+            if (x.length != 3) {
+                throw Error("Wrong number of arguments for define: " +
+                    (x.length - 1) + " != 2");
+            }
+            const [_, name, exp] = x;
+            if (!(name instanceof String)){
+                throw Error("Name of a definition is not a string: " +
+                    typeof name);
+            } else if ("begin define if lambda".split(" ").includes(name)) {
+                throw Error("Invalid name of a definition: " + name);
+            }
+            env[name.valueOf()] = yield* evaluate(exp, env);
         } else if (x[0].valueOf() === "begin") {
             if (x.length < 2) {
                 throw Error("At least one expression required in begin block.");
@@ -118,6 +139,18 @@
                 last_evald = yield* evaluate(exps[i], env);
             }
             return last_evald
+        } else if (x[0].valueOf() === "lambda") {
+            if (x.length != 3) {
+                throw Error("Wrong number of arguments for lambda: " +
+                    (x.length - 1) + " != 2");
+            }
+            const [_, arg_names, body] = x;
+            if (!(arg_names instanceof Array)) {
+                throw Error("Function arguments must be a list");
+            }
+            // Do nothing for now, except store the current environment
+            // together with the function definition.
+            return ["lambda", arg_names, body, env];
         } else {
             // Function call (no special form)
             const func_name = typeof x[0] === "string" ? x[0] : "<anon>";
@@ -278,7 +311,12 @@
     });
 
     // Example input:
-    vm.input = `(+ (+ 2 2) 5)`;
+    vm.input =  `(if (< 2 3) 2 3)`;
+
+vm.input_ =  `(define x 3)
+    (+ (+ 2 2) x)`;
+        
+    vm.input_ = `(+ (+ 2 2) 5)`;
 
     vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
