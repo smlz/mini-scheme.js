@@ -169,6 +169,9 @@
             // Do nothing for now, except store the current environment
             // together with the function definition.
             yield* markStarted(x[0]);
+            for (var i=0; i<arg_names.length; i++) {
+                yield* markDone(arg_names[i]);
+            }                
             yield* markDone(x[0]);
             return ["lambda", arg_names, body, env];
         } else {
@@ -342,7 +345,7 @@
 
     vm.input_ =  `(if (< 2 3) 2 3)`;
 
-    vm.input_ =  `(define x 4)
+    vm.input =  `(define x 4)
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
 (if (< 2 3) (avg x (avg 5 10)) 3)`;
 
@@ -351,7 +354,7 @@
         
     vm.input_ = `(+ (+ 2 2) 5)`;
 
-    vm.input = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
+    vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
 (define sqrt (lambda (x) (begin
     (define start_guess 1)
