@@ -223,28 +223,30 @@
             }
         },
         methods: {
-            step: function() {
-                this.result = undefined;
-
-                if (true) {
-                    var {value: result, done} = this.eval_gen.next();
-                    
-                    // tell vue to update token list
-                    let token_idx = this.tokens.findIndex(el => el.id == result.id);
-                    Vue.set(this.tokens, token_idx, result);
-                    if (!done) {
-                        return result;
-                    }
-                } else {
-                    while (!done) {
-                        var {value: result, done} = this.eval_gen.next();
-                        console.log(result);
-                    }
+            debuggerStep: function() {
+                var {value: result, done} = this.eval_gen.next();
+                
+                // tell vue to update token list
+                let token_idx = this.tokens.findIndex(el => el.id == result.id);
+                Vue.set(this.tokens, token_idx, result);
+                if (!done) {
+                    return result;
                 }
 
                 // we're done stepping: reset eval_gen to null
                 this.eval_gen = null;
+                this.processResult(result);
+            },
+            debuggerContinue: function() {
+                while (!done) {
+                    var {value: result, done} = this.eval_gen.next();
+                }
 
+                // we're done stepping: reset eval_gen to null
+                this.eval_gen = null;
+                this.processResult(result);
+            },
+            processResult: function(result) {
                 // return final result
                 if (result instanceof Array) {
                     const pprint = tree => tree instanceof Array ?
