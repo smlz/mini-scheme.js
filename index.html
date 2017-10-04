@@ -21,6 +21,7 @@
         <p v-if="eval_gen" class="code">
           <button v-on:click="debuggerStep">Step</button>
           <button v-on:click="debuggerContinue">Continue</button>
+          <button v-on:click="debuggerPlay">Play</button>
         </p>
         <h4 v-if="!eval_gen">Result</h4>
         <p v-if="!eval_gen" class="code">{{result}}</p>

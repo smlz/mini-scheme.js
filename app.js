@@ -95,7 +95,8 @@
         yield node;
     }
 
-    function* markDone(node) {
+    function* markDone(node, result) {
+        node.result = result;
         node.started = false;
         node.done = true;
         yield node;
@@ -195,7 +196,7 @@
             if (typeof func === "function") {
                 // Native JavaScript function call
                 let func_result = func(...args);
-                yield* markDone(firstToken);
+                yield* markDone(firstToken, func_result);
 
                 return func_result;
             } else if (func instanceof Array) {
@@ -299,9 +300,25 @@
                 this.eval_gen = null;
                 this.processResult(result);
             },
+            debuggerPlay: function() {
+                var {value: result, done} = this.eval_gen.next();
+                
+                // tell vue to update token list
+                let token_idx = this.tokens.findIndex(el => el.id == result.id);
+                Vue.set(this.tokens, token_idx, result);
+                if (!done) {
+                    setTimeout(this.debuggerPlay, 100);
+                    return result;
+                }
+
+                // we're done stepping: reset eval_gen to null
+                this.eval_gen = null;
+                this.processResult(result);
+            },
             debuggerContinue: function() {
                 while (!done) {
                     var {value: result, done} = this.eval_gen.next();
+                    
                 }
 
                 // we're done stepping: reset eval_gen to null
@@ -354,7 +371,7 @@
         
     vm.input_ = `(+ (+ 2 2) 5)`;
 
-    vm.input_ = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
+    vm.input = `(define abs  (lambda (a) (if (> a 0) a (- 0 a))))
 (define avg  (lambda (a b) (/ (+ a b) 2) ))
 (define sqrt (lambda (x) (begin
     (define start_guess 1)
