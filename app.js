@@ -307,7 +307,7 @@
                 let token_idx = this.tokens.findIndex(el => el.id == result.id);
                 Vue.set(this.tokens, token_idx, result);
                 if (!done) {
-                    setTimeout(this.debuggerPlay, 100);
+                    setTimeout(this.debuggerPlay, 80);
                     return result;
                 }
 
