@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>mini-scheme.js</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.logrocket.com/LogRocket.min.js"></script>
+    <script>window.LogRocket && window.LogRocket.init('cf4wag/mini-scheme');</script>
   </head>
   <body>
     <h1>mini-scheme.js</h1>
@@ -17,16 +19,20 @@
       <code class="chrome">)</code>
       <p v-if="error" class="error"><strong>{{error.name}}: </strong>{{error.message}}</p>
       <template v-else>
-        <h4>Step</h4>
-        <p class="code"><button>Step</button></p>
-        <h4>Result</h4>
-        <p class="code">{{result}}</p>
+        <h4 v-if="eval_gen">Debugger</h4>
+        <p v-if="eval_gen" class="code">
+          <button v-on:click="debuggerStep">Step</button>
+          <button v-on:click="debuggerContinue">Continue</button>
+          <button v-on:click="debuggerPlay">Play</button>
+        </p>
+        <h4 v-if="!eval_gen">Result</h4>
+        <p v-if="!eval_gen" class="code">{{result}}</p>
       </template>
       <div class="tokens">
         <h4>Tokens</h4>
         <p>
           <template v-for="token in tokens">
-            <span v-bind:id="token.id" class="token tooltip" v-bind:class="{tokendone: token.doing}" :key="token.valueOf()">
+            <span v-bind:id="token.id" class="token tooltip" v-bind:class="{tokendone: token.done, tokenstarted: token.started}" :key="token.valueOf()">
               {{token.valueOf()}}<span class="tooltiptext">Line: {{token.line}}:{{token.col}}</span></span>&nbsp;
           </template>
         </p>
