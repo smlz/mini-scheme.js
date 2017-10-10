@@ -288,7 +288,7 @@
         methods: {
             debuggerStep: function() {
                 var {value: result, done} = this.eval_gen.next();
-                
+
                 // tell vue to update token list
                 let token_idx = this.tokens.findIndex(el => el.id == result.id);
                 Vue.set(this.tokens, token_idx, result);
