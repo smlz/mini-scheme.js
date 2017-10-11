@@ -189,3 +189,13 @@ li, span.token, textarea, p.code, code {
     visibility: visible;
     opacity: .9;
 }
+
+.textarea {
+  -moz-appearance: textfield-multiline;
+  -webkit-appearance: textarea;
+  border: 1px solid gray;
+  height: 140px;
+  overflow: auto;
+  padding: 2px;
+  resize: both;
+}

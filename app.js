@@ -230,6 +230,56 @@
         }
     }
 
+    Vue.component('editable', {
+        template: '<div class=\"textarea\" contenteditable="true" @input="update"></div>',
+        props: ['content'],
+        mounted: function() {
+            console.log("Content(mounted): " + this.content);
+
+            var tokens = tokenize(this.content);
+            var result = "";
+            for (var token of tokens) {
+                result += (" " + token)
+            }
+            console.log(result);
+            // debugger;
+
+            this.$el.innerHTML = this.content;
+        },
+        methods: {
+            update: function(event) {
+                console.log("Content(update-HTML): " + event.target.innerHTML);
+
+                var tokens = tokenize(event.target.innerText);
+                var result = "";
+                for (var token of tokens) {
+                    result += (" <span  style=\"background-color:lightblue\">" + token + "</span>");
+                }
+                console.log(result);
+
+                // debugger;
+                var offs = window.getSelection().getRangeAt(0).endOffset
+                console.log('Current-Pos: ' + offs);
+                this.$el.innerHTML = result;
+                var range = document.createRange();
+                range.setStart(this.$el, offs);
+                range.setEnd(this.$el, offs);
+
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                // debugger;
+
+                // console.log("Content(update-TEXT): " + event.target.innerText);
+                // var tokens = tokenize(this.content);
+                // debugger;
+                //this.$el.innerHTML = event.target.innerHTML;
+
+                this.$emit('update', event.target.innerHTML);
+            }
+        }
+    });
+
     Vue.component("item", {
         template: "#item-template",
         props: ["model", "index", "parentToggle", "parentModel"],
@@ -278,6 +328,7 @@
             error: false,
             debug: true,
             eval_gen: undefined,
+            editext: "type <span style=\"background-color:blue\">your</span> <i><span>lisp</span></i> here"
         },
         computed: {
             parenBalance: function() {

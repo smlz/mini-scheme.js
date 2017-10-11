@@ -17,13 +17,29 @@
       <small v-else-if="parenBalance < 0" class="error">{{-parenBalance}} extra closed paren</small>
       <small v-else>&nbsp;</small>
       <code class="chrome">)</code>
+
+      <h4>div Source</h4>      
+      <editable :content="editext" @update="editext = $event"></editable>
+      <p>
+        Html: <div v-html="editext"></div>
+      </p>
+      <p>
+        Raw: <div>{{editext}}</div>
+      </p>
+      
+      <!-- <p contenteditable="true">
+        This is a <span style="background: #dddddd;">paragraph</span>. It is editable. Try to change this text.
+      </p>
+      <div v-model="eddiv" contenteditable="true">Hello, zis is a div</div> -->
+  
+
       <p v-if="error" class="error"><strong>{{error.name}}: </strong>{{error.message}}</p>
       <template v-else>
         <h4 v-if="eval_gen">Debugger</h4>
         <p v-if="eval_gen" class="code">
           <button v-on:click="debuggerStep">Step</button>
           <button v-on:click="debuggerContinue">Continue</button>
-          <button v-on:click="debuggerPlay">Play</button>
+          <button v-on:click="debuggerPlay" contenteditable="true">Play</button>
         </p>
         <h4 v-if="!eval_gen">Result</h4>
         <p v-if="!eval_gen" class="code">{{result}}</p>
